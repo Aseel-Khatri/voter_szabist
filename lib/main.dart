@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart' show Firebase;
 import 'package:flutter/material.dart';
 import 'package:voter_szabist/Screens/login.dart';
+import 'package:voter_szabist/utils/constants.dart';
 import 'package:voter_szabist/utils/size_config.dart';
 import 'firebase_options.dart';
 
@@ -23,7 +24,10 @@ class MyApp extends StatelessWidget {
       return MaterialApp(
         title: 'Voter-Zsabist',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          // primarySwatch: MaterialColor(0xff964B00, 0xffEADDCA),
+          buttonTheme: const  ButtonThemeData(
+            buttonColor: themeColor
+          )
         ),
         home: const Login(),
       );

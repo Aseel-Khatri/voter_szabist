@@ -33,8 +33,14 @@ class _LoginState extends State<Login> {
           key:_formKey,
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch,children: [
             CustomText(value: "Powered By",textAlign: TextAlign.center),
-            Image.asset("assets/logo.png",scale: 5.3),
-            SizedBox(height: heightSpace(6)),
+            Container(
+              width: widthSpace(45),
+              height: widthSpace(45),
+              margin: EdgeInsets.symmetric(vertical: heightSpace(3)),
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(image: AssetImage('assets/logo.png'),fit: BoxFit.contain)),
+            ),
             CustomText(value: "Login as a $_selectedType",fontSize: 2.7,textAlign: TextAlign.center,fontWeight: FontWeight.w500),
             SizedBox(height: heightSpace(3.5)),
             Container(

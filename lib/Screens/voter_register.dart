@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:voter_szabist/components/common_button.dart';
 // import 'package:image_picker/image_picker.dart';
 import 'package:voter_szabist/components/text_field.dart';
 import 'package:voter_szabist/utils/auth_helper.dart';
@@ -24,6 +29,10 @@ class _RegistrationState extends State<Registration> {
   TextEditingController program = TextEditingController();
 
   String _selectedType = "Voter";
+  String? image;
+  int? selectedSociety,selectedPosition;
+  final LocalAuthentication auth = LocalAuthentication();
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,10 +40,16 @@ class _RegistrationState extends State<Registration> {
           padding: EdgeInsets.symmetric(horizontal:widthSpace(10),vertical: heightSpace(10)),
           child: Form(
             key: _formKey,
-            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch,children: [
+            child: Column(crossAxisAlignment: CrossAxisAlignment.center,children: [
               CustomText(value: "Powered By",textAlign: TextAlign.center),
-              Image.asset("assets/logo.png",scale: 5.3),
-              SizedBox(height: heightSpace(5)),
+              Container(
+                width: widthSpace(45),
+                height: widthSpace(45),
+                margin: EdgeInsets.symmetric(vertical: heightSpace(3)),
+                decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(image: AssetImage('assets/logo.png'),fit: BoxFit.contain)),
+              ),
               CustomText(value: "$_selectedType Registration Form",fontSize: 2.7,textAlign: TextAlign.center,fontWeight: FontWeight.w500),
               const SizedBox(height: 2),
               CustomText(value: "Register yourself to support your candidate",fontSize: 1.7,color: Colors.black38,textAlign: TextAlign.center),
@@ -67,13 +82,34 @@ class _RegistrationState extends State<Registration> {
                 )
               ])),
               SizedBox(height: heightSpace(4)),
-              InkWell(child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all()
-                ),
-                child: const Icon(Icons.add_a_photo_outlined),
-              )),
+              Row(
+                children: [
+                  InkWell(
+                      onTap: profileUpload,
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                    width: widthSpace(40),
+                    height: widthSpace(40),
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.grey
+                      )
+                    ),
+                    child: image!=null?Image.file(File(image!)): const Icon(Icons.add_a_photo_outlined),
+                  )),
+                  const SizedBox(width:10),
+                  Expanded(
+                    child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                     CustomText(value:"Profile Picture",fontWeight: FontWeight.w500),
+                      CustomText(value:"You must upload a clear picture of your face.",color: Colors.grey,fontSize:1.6),
+                    ]),
+                  )
+                ],
+              ),
               CustomTextField(controller: first, hintText: "First Name",validator: (val)=>val.isEmpty?"Please fillout this field":null),
               SizedBox(height: heightSpace(2)),
               CustomTextField(controller: last, hintText: "Last Name",validator: (val)=>val.isEmpty?"Please fillout this field":null),
@@ -88,12 +124,84 @@ class _RegistrationState extends State<Registration> {
                 return val.isEmpty?"Please fillout this field": EmailValidator.validate(val)?null:"Please enter valid Email-Address";
               }),
               SizedBox(height: heightSpace(2)),
-              CustomTextField(controller: password, hintText: "Password",obscureText:true,validator: (val)=>val.isEmpty?"Please fillout this field":null),
-              SizedBox(height: heightSpace(2)),
               CustomTextField(controller: program, hintText: "Program",textInputType:TextInputType.emailAddress,validator: (val)=>val.isEmpty?"Please fillout this field":null),
+              SizedBox(height: heightSpace(2)),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                    border: Border(bottom: BorderSide())
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<int>(
+                    hint: Text('Select society to enroll with in it',style: TextStyle(fontSize: 15)),
+                    value: selectedSociety,
+                    isExpanded: true,
+                    padding: EdgeInsets.symmetric(horizontal:10),
+                    items: societies.map((e){
+                    return DropdownMenuItem(
+                      value: e['id'] as int,
+                      child: Text('${e['name']}',style: TextStyle(fontSize: 15)),
+                    );
+                  }).toList(), onChanged: (value) {
+                      setState(()=>selectedSociety = value);
+                  }),
+                ),
+              ),
+              if(selectedSociety!=null && _selectedType=="Candidate")...[
+                SizedBox(height: heightSpace(2)),
+                Container(
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
+                      border: Border(bottom: BorderSide())
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<int>(
+                        hint: const Text('Select a position you are standing for.',style: TextStyle(fontSize: 15)),
+                        value: selectedPosition,
+                        isExpanded: true,
+                        padding: const EdgeInsets.symmetric(horizontal:10),
+                        items: positions.map((e){
+                          return DropdownMenuItem(
+                            value: e['id'] as int,
+                            child: Text('${e['name']}',style: const TextStyle(fontSize: 15)),
+                          );
+                        }).toList(), onChanged: (value) {
+                      setState(()=>selectedPosition = value);
+                    }),
+                  ),
+                ),
+              ],
+              SizedBox(height: heightSpace(2)),
+              CustomTextField(controller: password, hintText: "Password",obscureText:true,validator: (val)=>val.isEmpty?"Please fillout this field":null),
+              // SizedBox(height: heightSpace(2)),
+              // InkWell(onTap: recordAuth,child:Container(
+              //   padding: EdgeInsets.all(10),
+              //   decoration: BoxDecoration(
+              //     color: Colors.white,
+              //     border: Border(bottom: BorderSide())
+              //   ),child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: [
+              //     CustomText(value: "Capture your finger print",fontSize: 1.6),
+              //   Icon(Icons.fingerprint_rounded)
+              // ]),
+              // )),
               SizedBox(height: heightSpace(4)),
-              ElevatedButton(onPressed: ()async{
+              CommonButton(onPressed: ()async{
+                if(image==null){
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please upload a profile picture.')));
+                  return;
+                }
+                if(selectedSociety==null){
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select society to enroll with in it.')));
+                  return;
+                }
+                if(selectedPosition==null && _selectedType=="Candidate"){
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select a position you are standing for.')));
+                  return;
+                }
                 if(_formKey.currentState!.validate()){
+                  setState(()=>isLoading=true);
                   var payload = await AuthHelper().signUp(
                       fname: first.text,
                       lname: last.text,
@@ -102,8 +210,12 @@ class _RegistrationState extends State<Registration> {
                       regEmail: regEmail.text,
                       privateEmail: privateEmail.text,
                       password: password.text,
+                      image: image!,
+                      societyId:selectedSociety!,
+                      positionId:selectedPosition??0,
                       role: _selectedType
                   );
+                  setState(()=>isLoading=false);
                   if(payload is String){
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(
@@ -121,7 +233,8 @@ class _RegistrationState extends State<Registration> {
                       ],
                     ),actions: [
                       TextButton(
-                        child: const Text("OK"),
+                        child: const Text("OK",style: TextStyle(color: themeColor)),
+                        style: ButtonStyle(backgroundColor: MaterialStateColor.resolveWith((states) => themeColor)),
                         onPressed: () {
                           Navigator.pop(context_);
                           Navigator.pop(context);
@@ -131,14 +244,30 @@ class _RegistrationState extends State<Registration> {
                   }
                 }
               },
-                  style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(vertical:widthSpace(4))),
-                  child: CustomText(value:"SUBMIT",fontWeight: FontWeight.w500,color: Colors.white)),
+                  isLoading:isLoading,
+                  title:'Submit'),
               SizedBox(height: heightSpace(2)),
-              TextButton(onPressed:(){Navigator.pop(context);},child: CustomText(value: "Already have an account? Please login.",fontWeight: FontWeight.w500,textAlign: TextAlign.end)),
+              TextButton(
+                  onPressed:(){Navigator.pop(context);},
+                  child: CustomText(value: "Already have an account? Please login.",
+                      fontWeight: FontWeight.w500,textAlign: TextAlign.end)),
             ]),
           ),
         )
     );
+  }
+  // recordAuth()async{
+  //   if(await auth.canCheckBiometrics && await auth.isDeviceSupported()){
+  //     final biometric =await auth.authenticate(localizedReason: 'Your biometric will be used to authenticate while casting a vote.');
+  //     print(biometric.);
+  //   }
+  // }
+  profileUpload(){
+    ImagePicker().pickImage(source: ImageSource.gallery).then((res){
+      if(res!=null){
+        setState(()=>image = res.path);
+      }
+    });
   }
 onRegIDChanged(val){
     regEmail.text = "$val@stu.smiu.edu.pk";

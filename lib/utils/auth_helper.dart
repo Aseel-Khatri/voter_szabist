@@ -2,23 +2,42 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
 
 class AuthHelper {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   CollectionReference students = FirebaseFirestore.instance.collection('students');
   get user => _auth.currentUser;
   late SharedPreferences _prefs;
-
-  Future signUp({fname,required lname,required registerId,required program,required regEmail,required privateEmail,required password,String role = "voter"}) async {
+  final storageRef = FirebaseStorage.instance.ref();
+  Future<String> uploadPic(String image,String regId) async {
+    Reference reference = storageRef.child("profile_images/$regId.png");
+    try{
+      await reference.putFile(File(image));
+      return await reference.getDownloadURL();
+    }catch(e){
+      print("Storageeroor: $e");
+      rethrow;
+    }
+  }
+  Future signUp({fname,required lname,required registerId,required program,required regEmail,required privateEmail,required password,required String image,required int societyId,required int positionId,String role = "voter",}) async {
     try {
-      var formData = {'fname': fname,'lname':lname,'registerId':registerId, 'regEmail': regEmail,'privateEmail':privateEmail, 'program': program,'role':role,'isVerified':false};
+      var formData = {'fname': fname,'lname':lname,'registerId':registerId, 'regEmail': regEmail,'privateEmail':privateEmail,
+        'societyId':societyId,
+        'positionId':positionId,
+        'program': program,'role':role,'isVerified':false};
       UserCredential user = await  _auth.createUserWithEmailAndPassword(email: regEmail,password: password);
+      String imgPath = await uploadPic(image,registerId);
+      formData['profile'] = imgPath;
+      print('Form:== $formData');
       students.doc(user.user?.uid).set(formData).then((value){
         formData['uid']= user.user?.uid;
       });
       return true;
     } on FirebaseAuthException catch (e) {
+      print("yhn serror: ${e}");
       return e.message;
     }
   }
