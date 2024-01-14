@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voter_szabist/Screens/status_screen.dart';
 import 'package:voter_szabist/Screens/system_home.dart';
+import 'package:voter_szabist/Screens/voter/societieis.dart';
 import 'package:voter_szabist/Screens/voter_register.dart';
 import 'package:voter_szabist/components/text_field.dart';
 import 'package:voter_szabist/utils/auth_helper.dart';
@@ -103,11 +104,14 @@ class _LoginState extends State<Login> {
                   ));
                   return;
                 }
-                print(payload);
+                user = payload;
                 if(payload['role']=="System"){
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SystemHome(user:payload)));
-                }else{
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StatusScreen(user:payload)));
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SystemHome()));
+                }else if(payload['role']=='Voter'){
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Societies()));
+                }
+                else{
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StatusScreen()));
                 }
               }},
                 style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(vertical:widthSpace(4))),

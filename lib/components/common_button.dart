@@ -5,17 +5,22 @@ class CommonButton extends StatelessWidget{
   final VoidCallback onPressed;
   final String title;
   final bool isLoading;
-  CommonButton({required this.title,required this.onPressed,this.isLoading=false});
+  final Color background;
+  final double borderRadius;
+  final double width;
+  CommonButton({required this.title,required this.onPressed,this.isLoading=false,this.background=themeColor,this.borderRadius=12,this.width=35});
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
-            backgroundColor: themeColor,
-            minimumSize: Size(widthSpace(35),heightSpace(5))),
+            backgroundColor: background,
+            minimumSize: Size(widthSpace(width),heightSpace(5)),
+            maximumSize: Size(widthSpace(width),heightSpace(5)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius))),
         onPressed: isLoading?null:onPressed, child: 
     isLoading
         ?const SizedBox(width: 20,height: 20,child: CircularProgressIndicator(color: themeColor))
-        :CustomText(value:title,fontWeight: FontWeight.w500,color: Colors.white));
+        :CustomText(value:title,fontWeight: FontWeight.w500,color: background==themeColor?Colors.white:Colors.black));
   }
 
 }

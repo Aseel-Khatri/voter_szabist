@@ -4,7 +4,8 @@ import 'package:voter_szabist/utils/size_config.dart';
 const themeColor = Color(0xff964B00);
 double heightSpace(val)=>val*SizeConfig.heightMultiplier;
 double widthSpace(val)=>val*SizeConfig.widthMultiplier;
-
+final double viewPadding = widthSpace(5);
+Map? user;
 final societies = [
   {
     'id':1,
@@ -42,15 +43,28 @@ final societies = [
 final positions = [
   {
     'id': 1,
-    'name': 'Female Secretary',
+    'name': 'President',
+    'plural': 'Presidents',
   },
   {
     'id': 2,
-    'name': 'Male Secretary',
+    'name': 'Vice President',
+    'plural': 'Vice Presidents',
   },
   {
     'id': 3,
-    'name': 'President',
+    'name': 'Female Secretary',
+    'plural': 'Female Secretaries',
+  },
+  {
+    'id': 4,
+    'name': 'Male Secretary',
+    'plural': 'Male Secretaries',
+  },
+  {
+    'id': 5,
+    'name': 'Treasurer',
+    'plural': 'Treasurers',
   }
 ];
 
@@ -64,6 +78,7 @@ class CustomText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(value,style: TextStyle(color: color??Colors.black,fontWeight: fontWeight,fontSize: heightSpace(fontSize)), textAlign: textAlign,);
+    return Text(value,
+      style:TextStyle(color: color??Colors.black,fontWeight: fontWeight,fontSize: heightSpace(fontSize)), textAlign: textAlign,);
   }
 }

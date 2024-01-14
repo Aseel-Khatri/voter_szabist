@@ -6,8 +6,7 @@ import 'package:voter_szabist/utils/auth_helper.dart';
 import 'package:voter_szabist/utils/constants.dart';
 
 class SystemHome extends StatelessWidget {
-  final Map user;
-  const SystemHome({Key? key,required this.user}) : super(key: key);
+  const SystemHome({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,7 @@ class SystemHome extends StatelessWidget {
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center,children: [
           ElevatedButton(onPressed:(){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => StatusScreen(user: user)));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => StatusScreen()));
           },child: CustomText(value: "View Statuses",color: Colors.white,fontWeight: FontWeight.w500,textAlign: TextAlign.end)),
           SizedBox(height: heightSpace(2)),
           ElevatedButton(onPressed:(){

@@ -5,10 +5,9 @@ import 'package:voter_szabist/utils/auth_helper.dart';
 import 'package:voter_szabist/utils/constants.dart';
 
 class StatusScreen extends StatelessWidget {
-  Map user;
   final _formKey = GlobalKey<FormState>();
   TextEditingController statusText = TextEditingController();
-  StatusScreen({Key? key,required this.user}) : super(key: key);
+  StatusScreen({Key? key}) : super(key: key);
 
   final statuses =FirebaseFirestore.instance.collection('statuses');
   @override
@@ -17,7 +16,7 @@ class StatusScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Statuses Listing"),
         actions: [
-          if(user['role']!="Voter")IconButton(
+          if(user!['role']!="Voter")IconButton(
               onPressed: () {
                 showDialog(context: context, builder: (context) {
                   return Dialog(alignment: Alignment.center,child: SizedBox(
@@ -39,9 +38,9 @@ class StatusScreen extends StatelessWidget {
                       ElevatedButton(onPressed: (){
                         if(_formKey.currentState!.validate()){
                           statuses.add({
-                            "name": "${user['fname']} ${user['lname']}",
-                            "regEmail" : user['regEmail'],
-                            'role':user['role'],
+                            "name": "${user!['fname']} ${user!['lname']}",
+                            "regEmail" : user!['regEmail'],
+                            'role':user!['role'],
                             'text':statusText.text,
                           }).then((value){
                             Navigator.pop(context);
@@ -94,7 +93,7 @@ class StatusScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 CustomText(value:"${data['name']}",color: Colors.grey),
-                                if(user['regEmail']==data['regEmail'])InkWell(child: Container(
+                                if(user!['regEmail']==data['regEmail'])InkWell(child: Container(
                                   padding: const EdgeInsets.all(6),
                                     decoration: BoxDecoration(
                                       color: Colors.red[50],
