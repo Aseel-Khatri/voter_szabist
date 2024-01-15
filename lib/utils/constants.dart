@@ -5,6 +5,7 @@ const themeColor = Color(0xff964B00);
 double heightSpace(val)=>val*SizeConfig.heightMultiplier;
 double widthSpace(val)=>val*SizeConfig.widthMultiplier;
 final double viewPadding = widthSpace(5);
+List? votingList;
 Map? user;
 final societies = [
   {

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:voter_szabist/Screens/status_screen.dart';
 import 'package:voter_szabist/Screens/system_home.dart';
@@ -24,6 +25,7 @@ class _LoginState extends State<Login> {
   TextEditingController emailSystem = TextEditingController();
   TextEditingController passwordSystem = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final votings =FirebaseFirestore.instance.collection('votings');
   String _selectedType = "Voter";
   @override
   Widget build(BuildContext context) {
@@ -92,6 +94,9 @@ class _LoginState extends State<Login> {
             ],
             SizedBox(height: heightSpace(4)),
             ElevatedButton(onPressed: ()async{
+              votings.get().then((res){
+                votingList = res.docs.map((e)=>e.data() as Map).toList();
+              });
               if(_formKey.currentState!.validate()){
                 var payload = await AuthHelper().signIn(
                     email:_selectedType=="Voter"?emailVoter.text:_selectedType=="Candidate"?emailCandid.text:emailSystem.text,

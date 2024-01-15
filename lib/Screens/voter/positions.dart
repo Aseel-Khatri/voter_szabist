@@ -20,12 +20,24 @@ class Positions extends StatelessWidget {
           SizedBox(height: heightSpace(1)),
           Center(child: CustomText(value: note,textAlign: TextAlign.center)),
           SizedBox(height: heightSpace(4)),
-          for(var item in positions)...[
-            Center(child: CommonButton(title: '${item['name']}', onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder:(c) => CandidatesList(society:society,position:item)));
-            },background: Colors.grey[300]!,width: 70)),
-            SizedBox(height: heightSpace(.7))
-          ]
+          ListView.separated(
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                bool voted = votingList!.where((e) =>e['societyId']==society['id'] &&  e['positionId']==positions[index]['id']).isNotEmpty;
+            return  Center(child: CommonButton(title: '${positions[index]['name']}', onPressed:(){
+              if(voted){
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text(
+                      'Already Voted!',
+                      style: TextStyle(fontSize: 16)),
+                ));
+                return;
+              }
+              Navigator.push(context, MaterialPageRoute(builder:(c) => CandidatesList(society:society,position:positions[index])));
+            },background: voted?Colors.lightGreen:Colors.grey[300]!,width: 70,
+            icon: voted?Icons.check_circle:null,
+            ));
+          }, separatorBuilder:(c, i) => SizedBox(height: heightSpace(.7)), itemCount: positions.length)
         ],
       ),
     );
