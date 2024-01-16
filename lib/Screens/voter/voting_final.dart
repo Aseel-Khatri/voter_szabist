@@ -12,7 +12,7 @@ class VotingFinal extends StatelessWidget {
   final candidate;
   VotingFinal({super.key, required this.societyId,required this.position,required this.candidate});
   final LocalAuthentication auth = LocalAuthentication();
-  final votings =FirebaseFirestore.instance.collection('votings');
+  final votingsDb =FirebaseFirestore.instance.collection('votings');
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -56,12 +56,16 @@ recordAuth(context)async{
   if(await auth.canCheckBiometrics && await auth.isDeviceSupported()){
     final biometric =await auth.authenticate(localizedReason: 'Your biometric will be used to authenticate while casting a vote.');
     if(biometric){
-        votings.add({
-          "candidateEmail": candidate!['regEmail'],
-          "voterEmail": user!['regEmail'],
-          "societyId" : societyId,
-          'positionId':position['id']
-        }).then((value){
+      Map<String,dynamic> voting = {
+        "candidateEmail": candidate!['regEmail'],
+        "voterEmail": user!['regEmail'],
+        "societyId" : societyId,
+        'positionId':position['id']
+      };
+      if(votingList!=null){
+        votingList!.add(voting);
+      }
+        votingsDb.add(voting).then((value){
           Navigator.popUntil(context, (route) => route.isFirst);
           showDialog(context: context, builder: (c) => Dialog(
             child: Padding(

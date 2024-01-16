@@ -19,7 +19,6 @@ class Registration extends StatefulWidget {
 
 class _RegistrationState extends State<Registration> {
   final _formKey = GlobalKey<FormState>();
-  // XFile? profile;
   TextEditingController first = TextEditingController();
   TextEditingController last = TextEditingController();
   TextEditingController regId = TextEditingController();
@@ -32,7 +31,7 @@ class _RegistrationState extends State<Registration> {
   String? image;
   int? selectedSociety,selectedPosition;
   final LocalAuthentication auth = LocalAuthentication();
-  bool isLoading = false;
+  bool isLoading = false,withdrawn=false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,37 +49,39 @@ class _RegistrationState extends State<Registration> {
                     shape: BoxShape.circle,
                     image: DecorationImage(image: AssetImage('assets/logo.png'),fit: BoxFit.contain)),
               ),
-              CustomText(value: "$_selectedType Registration Form",fontSize: 2.7,textAlign: TextAlign.center,fontWeight: FontWeight.w500),
-              const SizedBox(height: 2),
-              CustomText(value: "Register yourself to support your candidate",fontSize: 1.7,color: Colors.black38,textAlign: TextAlign.center),
-              SizedBox(height: heightSpace(3.5)),
-              Container(
-                  decoration: const BoxDecoration(
-                      border: Border(bottom: BorderSide(color: Colors.black12))
-                  ),child: Row(children: [
-                Expanded(
-                  child: InkWell(
-                    onTap: ()=>setState(()=>_selectedType="Voter"),
-                    child: Container(
-                      padding: EdgeInsets.only(bottom: heightSpace(.5)),
-                      decoration: BoxDecoration(
-                          border: Border(bottom: _selectedType=="Voter"?const BorderSide(width: 2):BorderSide.none)
-                      ),child: CustomText(value: "Voter",fontSize: 2.3,textAlign: TextAlign.center),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: InkWell(
-                    onTap: ()=>setState(()=>_selectedType="Candidate"),
-                    child: Container(
+              CustomText(value: "$_selectedType ${user!=null?"Edit Profile":"Registration Form"}",fontSize: 2.7,textAlign: TextAlign.center,fontWeight: FontWeight.w500),
+              if(user==null)...[
+                const SizedBox(height: 2),
+                CustomText(value: "Register yourself to support your candidate",fontSize: 1.7,color: Colors.black38,textAlign: TextAlign.center),
+                SizedBox(height: heightSpace(3.5)),
+                Container(
+                    decoration: const BoxDecoration(
+                        border: Border(bottom: BorderSide(color: Colors.black12))
+                    ),child: Row(children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: ()=>setState(()=>_selectedType="Voter"),
+                      child: Container(
                         padding: EdgeInsets.only(bottom: heightSpace(.5)),
                         decoration: BoxDecoration(
-                            border: Border(bottom: _selectedType=="Candidate"?const BorderSide(width: 2):BorderSide.none)
-                        ),child: CustomText(value: "Candidate",fontSize: 2.3,textAlign: TextAlign.center)
+                            border: Border(bottom: _selectedType=="Voter"?const BorderSide(width: 2):BorderSide.none)
+                        ),child: CustomText(value: "Voter",fontSize: 2.3,textAlign: TextAlign.center),
+                      ),
                     ),
                   ),
-                )
-              ])),
+                  Expanded(
+                    child: InkWell(
+                      onTap: ()=>setState(()=>_selectedType="Candidate"),
+                      child: Container(
+                          padding: EdgeInsets.only(bottom: heightSpace(.5)),
+                          decoration: BoxDecoration(
+                              border: Border(bottom: _selectedType=="Candidate"?const BorderSide(width: 2):BorderSide.none)
+                          ),child: CustomText(value: "Candidate",fontSize: 2.3,textAlign: TextAlign.center)
+                      ),
+                    ),
+                  )
+                ])),
+              ],
               SizedBox(height: heightSpace(4)),
               Row(
                 children: [
@@ -97,7 +98,7 @@ class _RegistrationState extends State<Registration> {
                         color: Colors.grey
                       )
                     ),
-                    child: image!=null?Image.file(File(image!)): const Icon(Icons.add_a_photo_outlined),
+                    child:  image!=null?image!.contains('profile_image')?Image.network(image!):Image.file(File(image!)): const Icon(Icons.add_a_photo_outlined),
                   )),
                   const SizedBox(width:10),
                   Expanded(
@@ -114,7 +115,13 @@ class _RegistrationState extends State<Registration> {
               SizedBox(height: heightSpace(2)),
               CustomTextField(controller: last, hintText: "Last Name",validator: (val)=>val.isEmpty?"Please fillout this field":null),
               SizedBox(height: heightSpace(2)),
-              CustomTextField(controller: regId, hintText: "Register-ID", onChanged: onRegIDChanged,validator: (val)=>val.isEmpty?"Please fillout this field":null),
+              CustomTextField(
+                controller: regId,
+                hintText: "Register-ID",
+                onChanged: onRegIDChanged,
+                validator: (val)=>val.isEmpty?"Please fillout this field":null,
+                editable: user==null,
+              ),
               SizedBox(height: heightSpace(2)),
               CustomTextField(controller: regEmail,editable:false, hintText: "regId@szabist.com",textInputType: TextInputType.emailAddress,validator: (val){
                 return val.isEmpty?"Please fillout this field": EmailValidator.validate(val)?null:"Please enter valid Email-Address";
@@ -171,8 +178,34 @@ class _RegistrationState extends State<Registration> {
                   ),
                 ),
               ],
-              SizedBox(height: heightSpace(2)),
-              CustomTextField(controller: password, hintText: "Password",obscureText:true,validator: (val)=>val.isEmpty?"Please fillout this field":null),
+              if(user==null)...[
+                SizedBox(height: heightSpace(2)),
+                CustomTextField(controller: password, hintText: "Password",obscureText:true,validator: (val)=>val.isEmpty?"Please fillout this field":null),
+              ],
+              if(user?['role']=='Candidate')...[
+                SizedBox(height: heightSpace(2)),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: InkWell(
+                        onTap: ()=>setState(()=>withdrawn=!withdrawn),
+                        child: Container(
+                      width: double.maxFinite,
+                        padding: const EdgeInsets.all(10),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        border: Border(bottom: BorderSide())
+                      ),
+                        child: CustomText(value:withdrawn?"I don't want to withdraw my self":"Withdraw from your position",
+                            color: Colors.redAccent,
+                            fontWeight: FontWeight.w500,fontSize: 1.75)))),
+                SizedBox(height: heightSpace(.5)),
+                Align(
+                    alignment: Alignment.centerLeft,
+                  child: CustomText(
+                      value:'Note: ${withdrawn?'Click save button to make changes, click again to undo to withdrawal':'Once withdrawn can not be undone, be careful !'}',
+                      fontSize: 1.65),
+                )
+              ],
               // SizedBox(height: heightSpace(2)),
               // InkWell(onTap: recordAuth,child:Container(
               //   padding: EdgeInsets.all(10),
@@ -188,69 +221,17 @@ class _RegistrationState extends State<Registration> {
               // )),
               SizedBox(height: heightSpace(4)),
               CommonButton(onPressed: ()async{
-                if(image==null){
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please upload a profile picture.')));
-                  return;
-                }
-                if(selectedSociety==null){
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select society to enroll with in it.')));
-                  return;
-                }
-                if(selectedPosition==null && _selectedType=="Candidate"){
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select a position you are standing for.')));
-                  return;
-                }
-                if(_formKey.currentState!.validate()){
-                  setState(()=>isLoading=true);
-                  var payload = await AuthHelper().signUp(
-                      fname: first.text,
-                      lname: last.text,
-                      registerId: regId.text,
-                      program: program.text,
-                      regEmail: regEmail.text,
-                      privateEmail: privateEmail.text,
-                      password: password.text,
-                      image: image!,
-                      societyId:selectedSociety!,
-                      positionId:selectedPosition??0,
-                      role: _selectedType
-                  );
-                  setState(()=>isLoading=false);
-                  if(payload is String){
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(
-                        payload,
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ));
-                  }else{
-                    showDialog(context: context, builder: (context_)=>AlertDialog(title:CustomText(value:"Registered Successfully",color: themeColor,fontSize: 2.1,fontWeight: FontWeight.bold),content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CustomText(value:"Your email ${regEmail.text} has been registered successfully, please wait for the system to verify it.",fontWeight: FontWeight.w500,fontSize: 1.9,color: Colors.black87),
-                        const SizedBox(height:6),
-                        CustomText(value:"Please don't use your private email for registration.",fontSize: 1.7,color: Colors.black38),
-                      ],
-                    ),actions: [
-                      TextButton(
-                        child: const Text("OK",style: TextStyle(color: themeColor)),
-                        style: ButtonStyle(backgroundColor: MaterialStateColor.resolveWith((states) => themeColor)),
-                        onPressed: () {
-                          Navigator.pop(context_);
-                          Navigator.pop(context);
-                        },
-                      )
-                    ]));
-                  }
-                }
+                register();
               },
                   isLoading:isLoading,
-                  title:'Submit'),
-              SizedBox(height: heightSpace(2)),
-              TextButton(
-                  onPressed:(){Navigator.pop(context);},
-                  child: CustomText(value: "Already have an account? Please login.",
-                      fontWeight: FontWeight.w500,textAlign: TextAlign.end)),
+                  title:user==null?'Submit':'Save'),
+              if(user==null)...[
+                SizedBox(height: heightSpace(2)),
+                TextButton(
+                    onPressed:(){Navigator.pop(context);},
+                    child: CustomText(value: "Already have an account? Please login.",
+                        fontWeight: FontWeight.w500,textAlign: TextAlign.end)),
+              ],
             ]),
           ),
         )
@@ -272,4 +253,91 @@ class _RegistrationState extends State<Registration> {
 onRegIDChanged(val){
     regEmail.text = "$val@stu.smiu.edu.pk";
 }
+register()async{
+  if(image==null){
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please upload a profile picture.')));
+    return;
+  }
+  if(selectedSociety==null){
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select society to enroll with in it.')));
+    return;
+  }
+  if(selectedPosition==null && _selectedType=="Candidate"){
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select a position you are standing for.')));
+    return;
+  }
+  if(_formKey.currentState!.validate()){
+    setState(()=>isLoading=true);
+    var payload = await AuthHelper().signUp(
+        fname: first.text,
+        lname: last.text,
+        registerId: regId.text,
+        program: program.text,
+        regEmail: regEmail.text,
+        privateEmail: privateEmail.text,
+        password: password.text,
+        image: image!,
+        societyId:selectedSociety!,
+        positionId:selectedPosition??0,
+        withdrawn:withdrawn,
+        role: _selectedType
+    );
+    setState(()=>isLoading=false);
+    if(payload is String){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          payload,
+          style: const TextStyle(fontSize: 16),
+        ),
+      ));
+    }else{
+      if(user!=null){
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+            'Profile has been Updated successfully',
+            style: TextStyle(fontSize: 16),
+          ),
+        ));
+        return;
+      }
+      showDialog(context: context, builder: (context_)=>AlertDialog(title:CustomText(value:"Registered Successfully",color: themeColor,fontSize: 2.1,fontWeight: FontWeight.bold),content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CustomText(value:"Your email ${regEmail.text} has been registered successfully, please wait for the system to verify it.",fontWeight: FontWeight.w500,fontSize: 1.9,color: Colors.black87),
+          const SizedBox(height:6),
+          CustomText(value:"Please don't use your private email for registration.",fontSize: 1.7,color: Colors.black38),
+        ],
+      ),actions: [
+        TextButton(
+          child: const Text("OK",style: TextStyle(color: themeColor)),
+          style: ButtonStyle(backgroundColor: MaterialStateColor.resolveWith((states) => themeColor)),
+          onPressed: () {
+            Navigator.pop(context_);
+            Navigator.pop(context);
+          },
+        )
+      ]));
+    }
+  }
+}
+@override
+  void initState() {
+    if(user!=null){
+      _selectedType =user!['role'];
+      image = user!['profile'];
+      first.text = user!['fname'];
+      last.text = user!['lname'];
+      regId.text = user!['registerId'];
+      regEmail.text = user!['regEmail'];
+      privateEmail.text = user!['privateEmail'];
+      program.text = user!['program'];
+      selectedSociety = user!['societyId'];
+      if(user!['role']=='Candidate'){
+        selectedPosition = user!['positionId'];
+        withdrawn = user?['withdrawn']??false;
+      }
+      setState((){});
+    }
+    super.initState();
+  }
 }

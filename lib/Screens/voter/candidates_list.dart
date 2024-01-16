@@ -33,44 +33,69 @@ class CandidatesList extends StatelessWidget {
               if (snapshot.data!.docs.isEmpty) {
                 return Center(child: Text("No Candidates found for ${position['name']} !"));
               }
-              List data = snapshot.data!.docs;
-              return ListView.builder(
+              List runningList = snapshot.data!.docs.where((e) => e['withdraw']==false).toList();
+              List withdrawnList = snapshot.data!.docs.where((e) => e['withdraw']==true).toList();
+              return Padding(
                 padding: EdgeInsets.all(viewPadding),
-                  itemBuilder: (context, i) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (c) => VotingFinal(
-                            societyId: society['id'],
-                            position: position,
-                            candidate: data[i])));
-                      },
-                      child: Row(
-                        children: [
-                          data[i]?['profile']==null
-                              ?const DefaultProfile()
-                              :Container(
-                              width: widthSpace(15),
-                              height: widthSpace(15),
-                              decoration: BoxDecoration(
-                                color: Colors.black12,
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(image: NetworkImage(data[i]['profile']))
-                              )),
-                          SizedBox(width: widthSpace(3)),
-                          Expanded(
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CustomText(value: '${data[i]['fname']} ${data[i]['lname']}',fontSize: 2,fontWeight: FontWeight.w500),
-                                  CustomText(value: data[i]['program']),
-                            ]),
-                          ),
-                          const Icon(Icons.chevron_right_rounded)
-                        ],
-                      ),
-                    );
-                  },
-                  itemCount: data.length);
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  CustomText(value: 'Running',fontWeight: FontWeight.w500),
+                  renderList(runningList, context),
+                  if(withdrawnList.isNotEmpty)...[
+                    Divider(height: heightSpace(2)),
+                    CustomText(value: 'Dropped out',fontWeight: FontWeight.w500),
+                    renderList(withdrawnList, context),
+                  ],
+                ]),
+              );
             }));
+  }
+  renderList(List data,context){
+    return ListView.builder(
+        shrinkWrap: true,
+        padding: EdgeInsets.only(top: heightSpace(1)),
+        itemBuilder: (context, i) {
+          return renderComponent(data[i],context);
+        },
+        itemCount: data.length);
+  }
+  renderComponent(data,context){
+    return InkWell(
+      onTap: data?['withdraw']==true?null:() {
+        Navigator.push(context, MaterialPageRoute(builder: (c) => VotingFinal(
+            societyId: society['id'],
+            position: position,
+            candidate: data)));
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Row(
+          children: [
+            data?['profile']==null
+                ?const DefaultProfile()
+                :Container(
+                width: widthSpace(15),
+                height: widthSpace(15),
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    shape: BoxShape.circle,
+                    image: DecorationImage(image: NetworkImage(data['profile']))
+                )),
+            SizedBox(width: widthSpace(3)),
+            Expanded(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomText(value: '${data?['fname']} ${data?['lname']}',fontSize: 2,fontWeight: FontWeight.w500),
+                    CustomText(value: data?['program']),
+                  ]),
+            ),
+            const Icon(Icons.chevron_right_rounded)
+          ],
+        ),
+      ),
+    );
   }
 }

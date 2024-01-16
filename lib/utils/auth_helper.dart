@@ -6,10 +6,12 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 
+import 'constants.dart';
+
 class AuthHelper {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   CollectionReference students = FirebaseFirestore.instance.collection('students');
-  get user => _auth.currentUser;
+  // get user => _auth.currentUser;
   late SharedPreferences _prefs;
   final storageRef = FirebaseStorage.instance.ref();
   Future<String> uploadPic(String image,String regId) async {
@@ -22,19 +24,24 @@ class AuthHelper {
       rethrow;
     }
   }
-  Future signUp({fname,required lname,required registerId,required program,required regEmail,required privateEmail,required password,required String image,required int societyId,required int positionId,String role = "voter",}) async {
+  Future signUp({fname,required lname,required registerId,required program,required regEmail,required privateEmail,required password,required String image,required int societyId,required int positionId,String role = "voter",bool withdrawn=false,bool isEdit=false}) async {
     try {
       var formData = {'fname': fname,'lname':lname,'registerId':registerId, 'regEmail': regEmail,'privateEmail':privateEmail,
         'societyId':societyId,
         'positionId':positionId,
-        'program': program,'role':role,'isVerified':false};
-      UserCredential user = await  _auth.createUserWithEmailAndPassword(email: regEmail,password: password);
-      String imgPath = await uploadPic(image,registerId);
-      formData['profile'] = imgPath;
-      print('Form:== $formData');
-      students.doc(user.user?.uid).set(formData).then((value){
-        formData['uid']= user.user?.uid;
+        'program': program,'role':role,'isVerified':false,'withdrawn':withdrawn};
+      String? user_ = user!=null?user!['uid']:(await _auth.createUserWithEmailAndPassword(email: regEmail,password: password)).user?.uid;
+      if(image!=user?['profile']){
+        String imgPath = await uploadPic(image,registerId);
+        formData['profile'] = imgPath;
+      }
+      if(user!=null){
+        user!.addAll(formData);
+      }
+      students.doc(user_).set(formData,SetOptions(merge: true)).then((value){
+        formData['uid']= user_;
       });
+      print(formData);
       return true;
     } on FirebaseAuthException catch (e) {
       print("yhn serror: ${e}");
@@ -78,6 +85,7 @@ class AuthHelper {
 
   //SIGN OUT METHOD
   Future<void> signOut() async {
+    user = null;
     await _auth.signOut();
   }
 }

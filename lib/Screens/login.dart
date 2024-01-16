@@ -95,7 +95,7 @@ class _LoginState extends State<Login> {
             SizedBox(height: heightSpace(4)),
             ElevatedButton(onPressed: ()async{
               votings.get().then((res){
-                votingList = res.docs.map((e)=>e.data() as Map).toList();
+                votingList = res.docs.map((e)=>e.data()).toList();
               });
               if(_formKey.currentState!.validate()){
                 var payload = await AuthHelper().signIn(
