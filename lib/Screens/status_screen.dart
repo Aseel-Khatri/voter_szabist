@@ -11,7 +11,6 @@ class StatusScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   TextEditingController statusText = TextEditingController();
   StatusScreen({Key? key}) : super(key: key);
-
   final statuses =FirebaseFirestore.instance.collection('statuses');
   @override
   Widget build(BuildContext context) {

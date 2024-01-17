@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:voter_szabist/Screens/status_screen.dart';
 import 'package:voter_szabist/Screens/system_home.dart';
 import 'package:voter_szabist/Screens/voter/societieis.dart';
 import 'package:voter_szabist/Screens/voter_register.dart';
 import 'package:voter_szabist/components/text_field.dart';
 import 'package:voter_szabist/utils/auth_helper.dart';
 import 'package:voter_szabist/utils/constants.dart';
+
+import 'candidate/candidate_home.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -116,7 +117,7 @@ class _LoginState extends State<Login> {
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Societies()));
                 }
                 else{
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StatusScreen()));
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>CandidateHome()));
                 }
               }},
                 style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(vertical:widthSpace(4))),
