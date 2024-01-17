@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:voter_szabist/Screens/candidate/profile.dart';
 import 'package:voter_szabist/Screens/login.dart';
 import 'package:voter_szabist/Screens/voter_register.dart';
-import 'package:voter_szabist/components/common_button.dart';
 import 'package:voter_szabist/utils/auth_helper.dart';
 import 'package:voter_szabist/utils/constants.dart';
 
