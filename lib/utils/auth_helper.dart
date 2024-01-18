@@ -29,7 +29,7 @@ class AuthHelper {
       var formData = {'fname': fname,'lname':lname,'registerId':registerId, 'regEmail': regEmail,'privateEmail':privateEmail,
         'societyId':societyId,
         'positionId':positionId,
-        'program': program,'role':role,'isVerified':false,'withdrawn':withdrawn};
+        'program': program,'role':role,'isVerified':user!=null,'withdrawn':withdrawn};
       String? user_ = user!=null?user!['uid']:(await _auth.createUserWithEmailAndPassword(email: regEmail,password: password)).user?.uid;
       if(image!=user?['profile']){
         String imgPath = await uploadPic(image,registerId);

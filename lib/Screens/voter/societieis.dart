@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:voter_szabist/Screens/voter/positions.dart';
 import 'package:voter_szabist/utils/constants.dart';
 
+import '../../utils/auth_helper.dart';
+import '../login.dart';
+
 class Societies extends StatelessWidget {
   const Societies({super.key});
 
@@ -10,6 +13,17 @@ class Societies extends StatelessWidget {
     final society = societies.where((e) => e['id']==user!['societyId']);
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            if(user?['role']=='Voter')IconButton(
+                onPressed: () {
+                  AuthHelper().signOut();
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => const Login()));
+                },
+                icon: const Icon(Icons.logout))
+          ],
+        ),
         body: Padding(
           padding:EdgeInsets.all(viewPadding),
           child: Column(

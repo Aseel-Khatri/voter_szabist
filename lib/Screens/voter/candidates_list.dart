@@ -33,8 +33,9 @@ class CandidatesList extends StatelessWidget {
               if (snapshot.data!.docs.isEmpty) {
                 return Center(child: Text("No Candidates found for ${position['name']} !"));
               }
-              List runningList = snapshot.data!.docs.where((e) => e['withdraw']==false).toList();
-              List withdrawnList = snapshot.data!.docs.where((e) => e['withdraw']==true).toList();
+              print(snapshot.data!.docs);
+              List runningList = snapshot.data!.docs.where((e) => ((e.data()as Map)['withdraw']??false)==false).toList();
+              List withdrawnList = snapshot.data!.docs.where((e) => (e.data() as Map)['withdraw']==true).toList();
               return Padding(
                 padding: EdgeInsets.all(viewPadding),
                 child: Column(
@@ -61,8 +62,18 @@ class CandidatesList extends StatelessWidget {
         itemCount: data.length);
   }
   renderComponent(data,context){
+    data = data.data() as Map;
+    if(data is DocumentSnapshot){
+      print("Data is DocumentSnapshotPlatform");
+    }
+    if(data is QueryDocumentSnapshot){
+      print("Data is QueryDocumentSnapshot");
+    }
+    if(data is Map){
+      print("Data is Map");
+    }
     return InkWell(
-      onTap: data?['withdraw']==true?null:() {
+      onTap: (data?['withdraw'])==true?null:() {
         Navigator.push(context, MaterialPageRoute(builder: (c) => VotingFinal(
             societyId: society['id'],
             position: position,

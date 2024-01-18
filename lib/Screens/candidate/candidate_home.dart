@@ -3,6 +3,8 @@ import 'package:voter_szabist/Screens/voter/societieis.dart';
 import 'package:voter_szabist/components/common_button.dart';
 import 'package:voter_szabist/utils/constants.dart';
 
+import '../../utils/auth_helper.dart';
+import '../login.dart';
 import '../status_screen.dart';
 
 class CandidateHome extends StatelessWidget {
@@ -12,7 +14,16 @@ class CandidateHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Welcome ${user!['fname']} ${user!['lname']}")
+        title: Text("Welcome ${user!['fname']} ${user!['lname']}"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                AuthHelper().signOut();
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const Login()));
+              },
+              icon: const Icon(Icons.logout))
+        ],
       ),
       body: Center(
         child: Column(
