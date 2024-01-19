@@ -14,6 +14,9 @@ class Societies extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: const Text('Societies'),
           actions: [
             if(user?['role']=='Voter')IconButton(
                 onPressed: () {
@@ -29,10 +32,10 @@ class Societies extends StatelessWidget {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomText(value: 'Societies',fontWeight: FontWeight.bold,fontSize: 2.3,color: themeColor),
-                SizedBox(height: heightSpace(2)),
+                // CustomText(value: 'Societies',fontWeight: FontWeight.bold,fontSize: 2.3,color: themeColor),
+                // SizedBox(height: heightSpace(2)),
            SizedBox(
-             height: user?['role']=='Voter'?heightSpace(18):heightSpace(80),
+             height: user?['role']=='Voter'?heightSpace(18):heightSpace(83),
              child: ListView.separated(
                  scrollDirection: user?['role']=='Voter'?Axis.horizontal:Axis.vertical,
                  itemBuilder: (c,i){

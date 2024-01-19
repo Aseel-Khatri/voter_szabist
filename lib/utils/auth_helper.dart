@@ -11,6 +11,7 @@ import 'constants.dart';
 class AuthHelper {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   CollectionReference students = FirebaseFirestore.instance.collection('students');
+  CollectionReference expiry = FirebaseFirestore.instance.collection('expiry');
   // get user => _auth.currentUser;
   late SharedPreferences _prefs;
   final storageRef = FirebaseStorage.instance.ref();
@@ -23,6 +24,9 @@ class AuthHelper {
       print("Storageeroor: $e");
       rethrow;
     }
+  }
+  setElectionsExpiry(String dateTime,context)async{
+    await expiry.doc('expiry').set({'expiry':dateTime},SetOptions(merge: true));
   }
   Future signUp({fname,required lname,required registerId,required program,required regEmail,required privateEmail,required password,required String image,required int societyId,required int positionId,String role = "voter",bool withdrawn=false,bool isEdit=false}) async {
     try {
@@ -63,7 +67,12 @@ class AuthHelper {
     try {
       UserCredential user = await _auth.signInWithEmailAndPassword(email: email, password: password);
       _prefs= await SharedPreferences.getInstance();
-      print(user.user?.uid);
+      expiry.doc('expiry').get().then((res){
+        Map payload = res.data() as Map;
+        electionExpiry = DateTime.parse(payload['expiry']);
+      });
+
+
       return students.doc(user.user?.uid).get().then((DocumentSnapshot value){
         Map payload = value.data() as Map;
         if(payload['isVerified']){

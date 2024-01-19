@@ -6,6 +6,7 @@ double heightSpace(val)=>val*SizeConfig.heightMultiplier;
 double widthSpace(val)=>val*SizeConfig.widthMultiplier;
 final double viewPadding = widthSpace(5);
 List? votingList;
+DateTime electionExpiry = DateTime.now();
 Map? user;
 final societies = [
   {

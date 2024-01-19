@@ -9,7 +9,8 @@ class CommonButton extends StatelessWidget{
   final double borderRadius;
   final double width;
   final IconData? icon;
-  CommonButton({required this.title,required this.onPressed,this.isLoading=false,this.isBorder=false,this.background=themeColor,this.borderRadius=12,this.width=40,this.icon});
+  final Color? textColor;
+  CommonButton({required this.title,required this.onPressed,this.isLoading=false,this.isBorder=false,this.background=themeColor,this.borderRadius=12,this.width=40,this.icon,this.textColor});
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
@@ -27,7 +28,7 @@ class CommonButton extends StatelessWidget{
         :Row(
       mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CustomText(value:title,fontWeight: FontWeight.w500,color: isBorder?background:background==themeColor?Colors.white:Colors.black),
+            CustomText(value:title,fontWeight: FontWeight.w500,color: textColor??(isBorder?background:background==themeColor?Colors.white:Colors.black)),
             if(icon!=null)Icon(icon,color: Colors.white),
           ],
         ));

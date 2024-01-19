@@ -34,15 +34,20 @@ class CandidatesList extends StatelessWidget {
                 return Center(child: Text("No Candidates found for ${position['name']} !"));
               }
               print(snapshot.data!.docs);
-              List runningList = snapshot.data!.docs.where((e) => ((e.data()as Map)['withdraw']??false)==false).toList();
-              List withdrawnList = snapshot.data!.docs.where((e) => (e.data() as Map)['withdraw']==true).toList();
+              List runningList = snapshot.data!.docs.where((e) => ((e.data()as Map)['withdrawn']??false)==false).toList();
+              List withdrawnList = snapshot.data!.docs.where((e) => (e.data() as Map)['withdrawn']==true).toList();
               return Padding(
                 padding: EdgeInsets.all(viewPadding),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                   CustomText(value: 'Running',fontWeight: FontWeight.w500),
-                  renderList(runningList, context),
+                  runningList.isEmpty
+                      ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical:8.0),
+                        child: CustomText(value: 'No running Candidate for now-',color: Colors.grey),
+                      )
+                      : renderList(runningList, context),
                   if(withdrawnList.isNotEmpty)...[
                     Divider(height: heightSpace(2)),
                     CustomText(value: 'Dropped out',fontWeight: FontWeight.w500),

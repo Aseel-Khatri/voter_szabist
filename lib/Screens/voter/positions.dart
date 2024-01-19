@@ -30,6 +30,10 @@ class Positions extends StatelessWidget {
               itemBuilder: (context, index) {
                 bool voted = !forResult && votingList!.where((e) =>e['societyId']==society['id'] &&  e['positionId']==positions[index]['id']).isNotEmpty;
             return  Center(child: CommonButton(title: '${positions[index]['name']}', onPressed:(){
+              if(electionExpiry.isBefore(DateTime.now())){
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Elections timed out !")));
+                return;
+              }
               if(forResult){
                 Navigator.push(context, MaterialPageRoute(builder:(c) =>
                     Results(

@@ -29,6 +29,7 @@ class CandidateHome extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+
             CommonButton(
                 onPressed: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => StatusScreen()));
