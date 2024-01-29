@@ -28,8 +28,11 @@ class Positions extends StatelessWidget {
           ListView.separated(
               shrinkWrap: true,
               itemBuilder: (context, index) {
-                bool voted = !forResult && votingList!.where((e) =>e['societyId']==society['id'] &&  e['positionId']==positions[index]['id']).isNotEmpty;
+                bool voted = !forResult && votingList!.where((e){
+                  return e['societyId']==society['id'] &&  e['positionId']==positions[index]['id'] && e['voterEmail']==user!['regEmail'];
+                }).isNotEmpty;
             return  Center(child: CommonButton(title: '${positions[index]['name']}', onPressed:(){
+              print(electionExpiry);
               if(electionExpiry.isBefore(DateTime.now())){
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Elections timed out !")));
                 return;

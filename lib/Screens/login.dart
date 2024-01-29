@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:voter_szabist/Screens/system_home.dart';
 import 'package:voter_szabist/Screens/voter/societieis.dart';
 import 'package:voter_szabist/Screens/voter_register.dart';
+import 'package:voter_szabist/components/common_button.dart';
 import 'package:voter_szabist/components/text_field.dart';
 import 'package:voter_szabist/utils/auth_helper.dart';
 import 'package:voter_szabist/utils/constants.dart';
@@ -94,34 +95,37 @@ class _LoginState extends State<Login> {
               TextButton(onPressed:(){},style: const ButtonStyle(alignment: Alignment.centerRight),child: CustomText(value: "Forgot Password?",textAlign: TextAlign.end)),
             ],
             SizedBox(height: heightSpace(4)),
-            ElevatedButton(onPressed: ()async{
-              votings.get().then((res){
-                votingList = res.docs.map((e)=>e.data()).toList();
-              });
-              if(_formKey.currentState!.validate()){
-                var payload = await AuthHelper().signIn(
-                    email:_selectedType=="Voter"?emailVoter.text:_selectedType=="Candidate"?emailCandid.text:emailSystem.text,
-                    password: _selectedType=="Voter"?passwordVoter.text:_selectedType=="Candidate"?passwordCandid.text:passwordSystem.text,role: _selectedType);
-                if(payload is String){
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(
-                        payload,
-                        style: const TextStyle(fontSize: 16)),
-                  ));
-                  return;
-                }
-                user = payload;
-                if(payload['role']=="System"){
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SystemHome()));
-                }else if(payload['role']=='Voter'){
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Societies()));
-                }
-                else{
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>CandidateHome()));
-                }
-              }},
-                style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(vertical:widthSpace(4))),
-                child: CustomText(value:"SUBMIT",fontWeight: FontWeight.w500,color: Colors.white,)),
+            CommonButton(
+                title: "SUBMIT",
+                onPressed:()async{
+                  votings.get().then((res){
+                    votingList = res.docs.map((e)=>e.data()).toList();
+                  });
+                  if(_formKey.currentState!.validate()){
+                    var payload = await AuthHelper().signIn(
+                        email:_selectedType=="Voter"?emailVoter.text:_selectedType=="Candidate"?emailCandid.text:emailSystem.text,
+                        password: _selectedType=="Voter"?passwordVoter.text:_selectedType=="Candidate"?passwordCandid.text:passwordSystem.text,role: _selectedType);
+                    if(payload is String){
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                            payload,
+                            style: const TextStyle(fontSize: 16)),
+                      ));
+                      return;
+                    }
+                    user = payload;
+                    if(payload['role']=="System"){
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SystemHome()));
+                    }else if(payload['role']=='Voter'){
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Societies()));
+                    }
+                    else{
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>CandidateHome()));
+                    }
+                  }}),
+            // ElevatedButton(onPressed: ,
+            //     style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(vertical:widthSpace(4))),
+            //     child: CustomText(value:"SUBMIT",fontWeight: FontWeight.w500,color: Colors.white,)),
             if(_selectedType!="System")...[
               SizedBox(height: heightSpace(1)),
               TextButton(onPressed:(){

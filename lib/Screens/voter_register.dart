@@ -123,7 +123,7 @@ class _RegistrationState extends State<Registration> {
                 editable: user==null,
               ),
               SizedBox(height: heightSpace(2)),
-              CustomTextField(controller: regEmail,editable:false, hintText: "regId@szabist.com",textInputType: TextInputType.emailAddress,validator: (val){
+              CustomTextField(controller: regEmail,editable:false, hintText: "regId@stu.smiu.edu.pk",textInputType: TextInputType.emailAddress,validator: (val){
                 return val.isEmpty?"Please fillout this field": EmailValidator.validate(val)?null:"Please enter valid Email-Address";
               }),
               SizedBox(height: heightSpace(2)),
@@ -309,7 +309,7 @@ register()async{
         ],
       ),actions: [
         TextButton(
-          child: const Text("OK",style: TextStyle(color: themeColor)),
+          child: const Text("OK",style: TextStyle(color: Colors.white)),
           style: ButtonStyle(backgroundColor: MaterialStateColor.resolveWith((states) => themeColor)),
           onPressed: () {
             Navigator.pop(context_);

@@ -54,9 +54,9 @@ class SystemHomeState extends State<SystemHome> {
                   onTap:(){
                     showDatePicker(context: context, firstDate: DateTime.now(), lastDate: DateTime(DateTime.now().year+1)).then((res){
                       if(res!=null){
-                        setState(()=>electionExpiry = res);
+                        setState(()=>electionExpiry = res.add(const Duration(minutes: 1439)));
                         AuthHelper().setElectionsExpiry(electionExpiry.toString(), context).then((_){
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Election expiry Updated")));
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Election expiry Updated")));
                         });
                       }
                     });
@@ -89,15 +89,15 @@ class SystemHomeState extends State<SystemHome> {
                           ],
                         ),actions: [
                           TextButton(
-                            child: Text("Yes",style: TextStyle(color: Colors.white)),
                             style: ButtonStyle(backgroundColor: MaterialStateColor.resolveWith((states) => themeColor)),
                             onPressed: () async{
                               Navigator.pop(context);
                               setState(()=>electionExpiry = DateTime(DateTime.now().year-1));
                               AuthHelper().setElectionsExpiry(electionExpiry.toString(), context).then((_){
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Election expiry Updated")));
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Election expiry Updated")));
                               });
                             },
+                            child: const Text("Yes",style: TextStyle(color: Colors.white)),
                           )
                         ]));
                       },
