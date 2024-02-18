@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:voter_szabist/Screens/voter/societieis.dart';
-import 'package:voter_szabist/components/common_button.dart';
-import 'package:voter_szabist/utils/constants.dart';
+import 'package:voter_smiu/Screens/voter/societieis.dart';
+import 'package:voter_smiu/components/common_button.dart';
+import 'package:voter_smiu/utils/constants.dart';
 
 import '../../utils/auth_helper.dart';
 import '../login.dart';

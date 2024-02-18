@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:voter_szabist/Screens/login.dart';
-import 'package:voter_szabist/Screens/voter_register.dart';
-import 'package:voter_szabist/utils/auth_helper.dart';
-import 'package:voter_szabist/utils/constants.dart';
+import 'package:voter_smiu/Screens/login.dart';
+import 'package:voter_smiu/Screens/voter_register.dart';
+import 'package:voter_smiu/utils/auth_helper.dart';
+import 'package:voter_smiu/utils/constants.dart';
 
 class StatusScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();

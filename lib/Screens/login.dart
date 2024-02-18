@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:voter_szabist/Screens/system_home.dart';
-import 'package:voter_szabist/Screens/voter/societieis.dart';
-import 'package:voter_szabist/Screens/voter_register.dart';
-import 'package:voter_szabist/components/common_button.dart';
-import 'package:voter_szabist/components/text_field.dart';
-import 'package:voter_szabist/utils/auth_helper.dart';
-import 'package:voter_szabist/utils/constants.dart';
+import 'package:voter_smiu/Screens/system_home.dart';
+import 'package:voter_smiu/Screens/voter/societieis.dart';
+import 'package:voter_smiu/Screens/voter_register.dart';
+import 'package:voter_smiu/components/common_button.dart';
+import 'package:voter_smiu/components/text_field.dart';
+import 'package:voter_smiu/utils/auth_helper.dart';
+import 'package:voter_smiu/utils/constants.dart';
 
 import 'candidate/candidate_home.dart';
 
@@ -90,10 +90,10 @@ class _LoginState extends State<Login> {
             CustomTextField(controller: _selectedType=="Voter"?emailVoter:_selectedType=="Candidate"?emailCandid:emailSystem,textInputType: TextInputType.emailAddress, hintText: "Email"),
             SizedBox(height: heightSpace(2)),
             CustomTextField(controller: _selectedType=="Voter"?passwordVoter:_selectedType=="Candidate"?passwordCandid:passwordSystem, hintText: "Password",obscureText:true),
-            if(_selectedType!="System")...[
-              SizedBox(height: heightSpace(2)),
-              TextButton(onPressed:(){},style: const ButtonStyle(alignment: Alignment.centerRight),child: CustomText(value: "Forgot Password?",textAlign: TextAlign.end)),
-            ],
+            // if(_selectedType!="System")...[
+            //   SizedBox(height: heightSpace(2)),
+            //   TextButton(onPressed:(){},style: const ButtonStyle(alignment: Alignment.centerRight),child: CustomText(value: "Forgot Password?",textAlign: TextAlign.end)),
+            // ],
             SizedBox(height: heightSpace(4)),
             CommonButton(
                 title: "SUBMIT",

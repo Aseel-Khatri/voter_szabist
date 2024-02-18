@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:voter_szabist/Screens/voter/societieis.dart';
-import 'package:voter_szabist/components/common_button.dart';
-import 'package:voter_szabist/components/default_profile.dart';
-import 'package:voter_szabist/utils/constants.dart';
+import 'package:voter_smiu/Screens/voter/societieis.dart';
+import 'package:voter_smiu/components/common_button.dart';
+import 'package:voter_smiu/components/default_profile.dart';
+import 'package:voter_smiu/utils/constants.dart';
 
 class VotingFinal extends StatelessWidget {
   final int societyId;

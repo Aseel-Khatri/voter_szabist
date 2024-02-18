@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voter_szabist/utils/constants.dart';
+import 'package:voter_smiu/utils/constants.dart';
 
 class DefaultProfile extends StatelessWidget {
   final double? size;

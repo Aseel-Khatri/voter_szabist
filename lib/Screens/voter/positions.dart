@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:voter_szabist/Screens/results.dart';
-import 'package:voter_szabist/Screens/voter/candidates_list.dart';
-import 'package:voter_szabist/components/common_button.dart';
-import 'package:voter_szabist/utils/constants.dart';
+import 'package:voter_smiu/Screens/results.dart';
+import 'package:voter_smiu/Screens/voter/candidates_list.dart';
+import 'package:voter_smiu/components/common_button.dart';
+import 'package:voter_smiu/utils/constants.dart';
 
 class Positions extends StatelessWidget {
   final Map society;

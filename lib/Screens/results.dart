@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:voter_szabist/utils/constants.dart';
+import 'package:voter_smiu/utils/constants.dart';
 class Results extends StatefulWidget{
   final Map society,position;
   Results({super.key,required this.society,required this.position});

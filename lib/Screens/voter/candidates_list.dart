@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:voter_szabist/Screens/voter/voting_final.dart';
-import 'package:voter_szabist/components/default_profile.dart';
-import 'package:voter_szabist/utils/constants.dart';
+import 'package:voter_smiu/Screens/voter/voting_final.dart';
+import 'package:voter_smiu/components/default_profile.dart';
+import 'package:voter_smiu/utils/constants.dart';
 
 class CandidatesList extends StatelessWidget {
   final Map society, position;

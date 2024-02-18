@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:voter_szabist/Screens/voter/positions.dart';
-import 'package:voter_szabist/utils/constants.dart';
+import 'package:voter_smiu/Screens/voter/positions.dart';
+import 'package:voter_smiu/utils/constants.dart';
 
 import '../../utils/auth_helper.dart';
 import '../login.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voter_szabist/utils/size_config.dart';
+import 'package:voter_smiu/utils/size_config.dart';
 
 const themeColor = Color(0xff964B00);
 double heightSpace(val)=>val*SizeConfig.heightMultiplier;

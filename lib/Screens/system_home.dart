@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:voter_szabist/Screens/account_requests.dart';
-import 'package:voter_szabist/Screens/login.dart';
-import 'package:voter_szabist/Screens/status_screen.dart';
-import 'package:voter_szabist/Screens/voter/societieis.dart';
-import 'package:voter_szabist/components/common_button.dart';
-import 'package:voter_szabist/utils/auth_helper.dart';
-import 'package:voter_szabist/utils/constants.dart';
+import 'package:voter_smiu/Screens/account_requests.dart';
+import 'package:voter_smiu/Screens/login.dart';
+import 'package:voter_smiu/Screens/status_screen.dart';
+import 'package:voter_smiu/Screens/voter/societieis.dart';
+import 'package:voter_smiu/components/common_button.dart';
+import 'package:voter_smiu/utils/auth_helper.dart';
+import 'package:voter_smiu/utils/constants.dart';
 class SystemHome extends StatefulWidget{
   const SystemHome({super.key});
 
