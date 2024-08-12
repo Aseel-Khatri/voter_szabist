@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:voter_smiu/utils/constants.dart';
 class Results extends StatefulWidget{
@@ -9,14 +10,13 @@ class Results extends StatefulWidget{
 }
 class ResultsState extends State<Results> {
   List? students;
-
+  int maxVotes = 0;
+  int topperI = 0;
   @override
   Widget build(BuildContext context) {
     final voting =FirebaseFirestore.instance.collection('votings').where(
         'societyId',isEqualTo: widget.society['id']).
     where('positionId',isEqualTo:widget.position['id']);
-    print("${widget.society}");
-    print("${widget.position}");
     return Scaffold(
       appBar: AppBar(title: const Text('Polling Results')),
       body: students==null
@@ -33,19 +33,48 @@ class ResultsState extends State<Results> {
             if(snapshot.data!.docs.isEmpty){
               return const Center(child: Text("No Voting yet !"));
             }
-            return ListView.separated(
+            return Padding(
               padding: EdgeInsets.all(viewPadding),
-                itemBuilder: (context, i) {
-                  var data = snapshot.data!.docs.where((e) => (e.data() as Map)['candidateEmail']==students![i]['regEmail']);
-                  return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomText(value: '${students![i]['fname']} ${students![i]['lname']}'),
-                        CustomText(value: "${data.length}")
-                  ]);
-                },
-                separatorBuilder: (context, index) => Divider(height: heightSpace(5)),
-                itemCount: students!.length);
+              child: Column(
+                children: [
+                  // Row(children: [
+                  //   Expanded(
+                  //     child: Column(children: [
+                  //       Image.network(src)
+                  //     ]),
+                  //   ),
+                  //   Image.asset('assets/reward.png',width:widthSpace(17)),
+                  //
+                  // ]),
+                  Expanded(
+                    child: ListView.separated(
+                      padding: EdgeInsets.only(top: viewPadding),
+                        itemBuilder: (context, i) {
+                          var data = snapshot.data!.docs.where((e) => (e.data() as Map)['candidateEmail']==students![i]['regEmail']);
+                          if(data.length>maxVotes){
+                            maxVotes = data.length;
+                            topperI = i;
+                          }
+                          return Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomText(value: '${students![i]['fname']} ${students![i]['lname']}',fontWeight: FontWeight.w500,fontSize: 2.1),
+                                Spacer(),
+                                if(topperI==i)...[
+                                  Image.asset('assets/reward.png',width: widthSpace(12)),
+                                  SizedBox(width: widthSpace(2))
+                                ],
+                                CircleAvatar(
+                                backgroundColor: Colors.grey[100],
+                                child: CustomText(value: "${data.length}"))
+                          ]);
+                        },
+                        separatorBuilder: (context, index) => Divider(height: heightSpace(5)),
+                        itemCount: students!.length),
+                  ),
+                ],
+              ),
+            );
         }
       ),
     );
