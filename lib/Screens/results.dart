@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:voter_smiu/utils/constants.dart';
 class Results extends StatefulWidget{
@@ -10,30 +9,15 @@ class Results extends StatefulWidget{
 }
 class ResultsState extends State<Results> {
   List? students;
-  int maxVotes = 0;
-  int topperI = 0;
+  int topperVote = 0;
   @override
   Widget build(BuildContext context) {
-    final voting =FirebaseFirestore.instance.collection('votings').where(
-        'societyId',isEqualTo: widget.society['id']).
-    where('positionId',isEqualTo:widget.position['id']);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Polling Results')),
       body: students==null
           ?const Center(child:CircularProgressIndicator())
-          :StreamBuilder(
-        stream: voting.snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if(snapshot.data!.docs.isEmpty){
-              return const Center(child: Text("No Voting yet !"));
-            }
-            return Padding(
+          :Padding(
               padding: EdgeInsets.all(viewPadding),
               child: Column(
                 children: [
@@ -50,23 +34,23 @@ class ResultsState extends State<Results> {
                     child: ListView.separated(
                       padding: EdgeInsets.only(top: viewPadding),
                         itemBuilder: (context, i) {
-                          var data = snapshot.data!.docs.where((e) => (e.data() as Map)['candidateEmail']==students![i]['regEmail']);
-                          if(data.length>maxVotes){
-                            maxVotes = data.length;
-                            topperI = i;
-                          }
+                          // var data = snapshot.data!.docs.where((e) => (e.data() as Map)['candidateEmail']==students![i]['regEmail']);
+                          // if(data.length>maxVotes){
+                          //   maxVotes = data.length;
+                          //   topperI = i;
+                          // }
                           return Row(
                               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 CustomText(value: '${students![i]['fname']} ${students![i]['lname']}',fontWeight: FontWeight.w500,fontSize: 2.1),
                                 Spacer(),
-                                if(topperI==i)...[
+                                if(topperVote==students![i]['voting'])...[
                                   Image.asset('assets/reward.png',width: widthSpace(12)),
                                   SizedBox(width: widthSpace(2))
                                 ],
                                 CircleAvatar(
                                 backgroundColor: Colors.grey[100],
-                                child: CustomText(value: "${data.length}"))
+                                child: CustomText(value: "${students![i]['voting']}"))
                           ]);
                         },
                         separatorBuilder: (context, index) => Divider(height: heightSpace(5)),
@@ -74,9 +58,7 @@ class ResultsState extends State<Results> {
                   ),
                 ],
               ),
-            );
-        }
-      ),
+            ),
     );
   }
   @override
@@ -89,7 +71,23 @@ class ResultsState extends State<Results> {
         'societyId',isEqualTo: widget.society['id']).
     where('positionId',isEqualTo:widget.position['id']);
     collection.get().then((res){
-      setState(()=>students = res.docs.map((e)=>e.data()).toList());
+      students = res.docs.map((e)=>e.data()).toList();
+      getVoting();
     });
+}
+getVoting(){
+  final votingData =FirebaseFirestore.instance.collection('votings').where(
+      'societyId',isEqualTo: widget.society['id']).
+  where('positionId',isEqualTo:widget.position['id']);
+  votingData.get().then((res){
+    for(var item in students!){
+      var data = res.docs.where((e) => (e.data() as Map)['candidateEmail']==item['regEmail']);
+      item['voting'] = data.length;
+      if(item['voting']>topperVote){
+        topperVote = item['voting'];
+      }
+    }
+    setState((){});
+  });
 }
 }
